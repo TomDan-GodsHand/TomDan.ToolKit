@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -233,7 +234,7 @@ namespace TomDan.ToolKit.PluginManagement
             var plugins = serviceProvider.GetServices<IPlugin>();
             foreach (var plugin in plugins)
             {
-                //logger.LogInformation($"Plugin :{plugin.PluginName},Ex:{plugin.TimesExecute()}");
+                logger.LogInformation($"Plugin :{plugin.PluginName},Ex:{plugin.TimesExecute()}");
             }
         }
 

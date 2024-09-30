@@ -7,7 +7,7 @@ using Tomdan.ToolKit.Plugin.Base;
 
 namespace TomDan.ToolKit.PluginManagement
 {
-    internal class EventAggregator : IEventAggregator
+    public class EventAggregator : IEventAggregator
     {
         private readonly Dictionary<string, List<Action<object>>> _dicsubscribers = new();
 
