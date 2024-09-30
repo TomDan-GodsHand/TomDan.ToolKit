@@ -5,6 +5,12 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomDan.ToolKit.Core", "TomDan.ToolKit\TomDan.ToolKit.Core.csproj", "{4912421C-778E-4E70-9A81-AD7CB87CE767}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomDan.ToolKit.Model", "TomDan.ToolKit.Model\TomDan.ToolKit.Model.csproj", "{FA5211CB-BE1D-49F9-9A02-6E71ED26450B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tomdan.ToolKit.Plugin.Base", "Tomdan.ToolKit.Plugin.Base\Tomdan.ToolKit.Plugin.Base.csproj", "{816AD584-74E1-41E0-951C-50CDE13F81A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomDan.ToolKit.PluginManagement", "TomDan.ToolKit.PluginManagement\TomDan.ToolKit.PluginManagement.csproj", "{8D27BD40-A18E-4FE1-986F-DC0F901C0E79}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{4912421C-778E-4E70-9A81-AD7CB87CE767}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4912421C-778E-4E70-9A81-AD7CB87CE767}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4912421C-778E-4E70-9A81-AD7CB87CE767}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA5211CB-BE1D-49F9-9A02-6E71ED26450B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA5211CB-BE1D-49F9-9A02-6E71ED26450B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA5211CB-BE1D-49F9-9A02-6E71ED26450B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA5211CB-BE1D-49F9-9A02-6E71ED26450B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{816AD584-74E1-41E0-951C-50CDE13F81A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{816AD584-74E1-41E0-951C-50CDE13F81A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{816AD584-74E1-41E0-951C-50CDE13F81A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{816AD584-74E1-41E0-951C-50CDE13F81A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D27BD40-A18E-4FE1-986F-DC0F901C0E79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D27BD40-A18E-4FE1-986F-DC0F901C0E79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D27BD40-A18E-4FE1-986F-DC0F901C0E79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D27BD40-A18E-4FE1-986F-DC0F901C0E79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
