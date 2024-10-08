@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Tomdan.ToolKit.Plugin.Base;
 
 namespace TomDan.ToolKit.PluginManagement
 {
@@ -42,5 +44,17 @@ namespace TomDan.ToolKit.PluginManagement
             pluginManager.Stop();
         }
 
+        public static void InitPluginManager(IServiceCollection services)
+        {
+            services.AddSingleton<PluginManager>();
+            services.AddSingleton<PluginContext>();
+            services.AddSingleton<IEventAggregator, EventAggregator>();
+
+            var pluginManager = new PluginManager();
+            pluginManager.LoadPlugin(services, new Logger<PluginManager>(new LoggerFactory()));
+            //插件服务托管
+            services.AddHostedService<PluginService>();
+             
+        }
     }
 }

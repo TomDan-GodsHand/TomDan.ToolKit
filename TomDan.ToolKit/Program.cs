@@ -1,9 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Tomdan.ToolKit.Plugin.Base;
 using TomDan.ToolKit.Core.Core;
 using TomDan.ToolKit.PluginManagement;
+using NLog;
+using NLog.Extensions.Logging;
 
 namespace TomDan.ToolKit.Core
 {
@@ -16,19 +19,16 @@ namespace TomDan.ToolKit.Core
 
                 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
                 // 插件管理器注入
+
+                SetLogger(builder.Services);
                 builder.Services.AddSingleton<AutoResetEvent>(new AutoResetEvent(false));
-                builder.Services.AddSingleton<PluginManager>();
-                builder.Services.AddSingleton<PluginContext>();
                 builder.Services.AddLogging();
-                builder.Services.AddSingleton<IEventAggregator, EventAggregator>();
-                var pluginManager = new PluginManager();
-                pluginManager.LoadPlugin(builder.Services, new Logger<PluginManager>(new LoggerFactory()));
+                PluginService.InitPluginManager(builder.Services);
+
 
                 #region 添加托管的服务
                 //核心服务托管
                 builder.Services.AddHostedService<Service>();
-                //插件服务托管
-                builder.Services.AddHostedService<PluginService>();
                 #endregion
                 using IHost host = builder.Build();
 
@@ -38,6 +38,20 @@ namespace TomDan.ToolKit.Core
             {
                 Console.WriteLine(ex);
             }
+        }
+
+        private static void SetLogger(IServiceCollection services)
+        {
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory()) 
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .Build();
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.ClearProviders();
+                loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                loggingBuilder.AddNLog(config);
+            }).BuildServiceProvider();
         }
     }
 }
