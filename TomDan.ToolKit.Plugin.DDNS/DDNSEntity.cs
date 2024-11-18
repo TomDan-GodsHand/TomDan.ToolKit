@@ -1,6 +1,8 @@
 using System;
+using System.Text.Json.Serialization;
 
-namespace TomDan.ToolKit.Plugin.DDNS;
+namespace TomDan.ToolKit.Plugin.DDNS
+{
     public class ModifyRecordRequest
     {
         /// <summary>
@@ -112,10 +114,10 @@ namespace TomDan.ToolKit.Plugin.DDNS;
         public string Code { get; set; }
         public string Message { get; set; }
     }
-   public  class TcResponse<T>
+    public class TcResponse<T>
     {
         public T response { get; set; }
-}
+    }
     public class DescribeRecordListResponse
     {
         public TcErrorResponse Error { get; set; }
@@ -127,3 +129,4 @@ namespace TomDan.ToolKit.Plugin.DDNS;
         public TcErrorResponse Error { get; set; }
         public long? RecordId { get; set; }
     }
+}

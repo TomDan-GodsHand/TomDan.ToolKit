@@ -1,20 +1,21 @@
 using System;
 
-namespace TomDan.ToolKit.Plugin.DDNS;
+namespace TomDan.ToolKit.Plugin.DDNS
+{
 
     public class DDNS
     {
         private string domain { set; get; }
         private RequestClient requestClient { set; get; }
         private string subDomain { set; get; }
-        public DDNS(string secretId,string secretKey,string domain,string subDomain)
+        public DDNS(string secretId, string secretKey, string domain, string subDomain)
         {
             string host = "dnspod.tencentcloudapi.com";
             string service = "dnspod";
-            requestClient = new RequestClient(secretId,secretKey,host,service);
+            requestClient = new RequestClient(secretId, secretKey, host, service);
         }
 
-        public async Task<(bool,DescribeRecordListResponse?)> QueryRecordList(string recordType)
+        public async Task<(bool, DescribeRecordListResponse?)> QueryRecordList(string recordType)
         {
             try
             {
@@ -57,10 +58,10 @@ namespace TomDan.ToolKit.Plugin.DDNS;
 
             }
             catch { throw; }
-           
+
         }
 
-        public async Task<bool> ChangeRecord(RecordListItem recordItem,string value)
+        public async Task<bool> ChangeRecord(RecordListItem recordItem, string value)
         {
             try
             {
@@ -83,8 +84,8 @@ namespace TomDan.ToolKit.Plugin.DDNS;
                     return true;
                 else
                     return false;
-            } 
-            catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw;
             }
@@ -103,22 +104,22 @@ namespace TomDan.ToolKit.Plugin.DDNS;
                     {
                         var changeResult = await ChangeRecord(result, currentIp);
 
-                            if (changeResult)
-                            {
-                                Console.WriteLine($"发现 IP 变化，解析时间：current_time:{DateTime.Now}");
-                            }
-                            else
-                            {
-                                Console.WriteLine("更新 IP 状态失败");
-                            }
+                        if (changeResult)
+                        {
+                            Console.WriteLine($"发现 IP 变化，解析时间：current_time:{DateTime.Now}");
                         }
                         else
                         {
-                            Console.WriteLine("IP 未发生变化");
+                            Console.WriteLine("更新 IP 状态失败");
                         }
-                        break;
-                                  } 
-                catch(Exception ex)
+                    }
+                    else
+                    {
+                        Console.WriteLine("IP 未发生变化");
+                    }
+                    break;
+                }
+                catch (Exception ex)
                 {
                     count--;
                     await Task.Delay(TimeSpan.FromSeconds(10));

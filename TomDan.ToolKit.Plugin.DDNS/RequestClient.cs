@@ -1,15 +1,24 @@
 using System;
-
-namespace TomDan.ToolKit.Plugin.DDNS;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using TomDan.ToolKit.Plugin.DDNS;
+namespace TomDan.ToolKit.Plugin.DDNS
+{
 
     public class RequestClient
     {
-       string SecretId { get; set; }
-       string SecretKey { get; set; }
-       string Host { get; set; }
-       string Service { get; set; }
-       string Region { get; set; }
-       string Version { get; set; }
+        string SecretId { get; set; }
+        string SecretKey { get; set; }
+        string Host { get; set; }
+        string Service { get; set; }
+        string Region { get; set; }
+        string Version { get; set; }
 
         public RequestClient(string secretId, string secretKey, string host, string service)
         {
@@ -20,7 +29,8 @@ namespace TomDan.ToolKit.Plugin.DDNS;
             Region = string.Empty;
             Version = "2021-03-23";
         }
-        public async Task<(bool,DDNSEntity.TcResponse<R>)> Send<T,R>(string action,T payload)        {
+        public async Task<(bool, TcResponse<R>)> Send<T, R>(string action, T payload)
+        {
 
             try
             {
@@ -53,10 +63,10 @@ namespace TomDan.ToolKit.Plugin.DDNS;
 
                 // 读取并反序列化响应
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<TcResponse<R>>(jsonResponse);
-                return (true,result);
+                var result = System.Text.Json.JsonSerializer.Deserialize<TcResponse<R>>(jsonResponse);
+                return (true, result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return (false, null);
             }

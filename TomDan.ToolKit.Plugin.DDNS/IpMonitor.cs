@@ -1,6 +1,8 @@
 using System;
+using System.Net;
 
-namespace TomDan.ToolKit.Plugin.DDNS;
+namespace TomDan.ToolKit.Plugin.DDNS
+{
 
 
     public class IpMonitor
@@ -57,7 +59,7 @@ namespace TomDan.ToolKit.Plugin.DDNS;
                     {
                         if (recordItem.Value != CurrentIp.ToString())
                         {
-                            var res = await DDNS.ChangeRecord(recordItem,CurrentIp.ToString());
+                            var res = await DDNS.ChangeRecord(recordItem, CurrentIp.ToString());
 
                             if (res)
                             {
@@ -105,7 +107,7 @@ namespace TomDan.ToolKit.Plugin.DDNS;
                 var response = await httpClient.GetAsync("https://6.ipw.cn");
 
                 response.EnsureSuccessStatusCode();
-                var a =await response.Content.ReadAsStringAsync();
+                var a = await response.Content.ReadAsStringAsync();
                 return a.Trim(); // Trimming in case of extra spaces or new lines
             }
             catch (Exception ex)
