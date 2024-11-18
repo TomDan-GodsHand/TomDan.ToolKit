@@ -4,10 +4,18 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+     <SelfContained>true</SelfContained>
+	  <PlatformTarget>x64</PlatformTarget>
+    <EnablePreviewFeatures>true</EnablePreviewFeatures>
+	  <PublishAot>true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Tomdan.ToolKit.Plugin.Base\Tomdan.ToolKit.Plugin.Base.csproj" />
   </ItemGroup>
-
+  <ItemGroup>
+    <None Update="config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
