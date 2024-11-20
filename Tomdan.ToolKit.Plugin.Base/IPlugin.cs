@@ -26,7 +26,7 @@ namespace Tomdan.ToolKit.Plugin.Base
         /// <returns>
         /// 返回是否初始化成功
         /// </returns>
-        bool Initialize(IEventAggregator eventAggregator, IServiceProvider serviceProvider = null);
+        bool Initialize(IEventAggregator eventAggregator, IServiceProvider serviceProvider = null, object baseData = null);
         bool BeforeCore();
         bool AfterCore();
 

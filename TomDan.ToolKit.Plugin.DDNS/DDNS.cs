@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace TomDan.ToolKit.Plugin.DDNS
 {
@@ -8,11 +9,13 @@ namespace TomDan.ToolKit.Plugin.DDNS
         private string domain { set; get; }
         private RequestClient requestClient { set; get; }
         private string subDomain { set; get; }
-        public DDNS(string secretId, string secretKey, string domain, string subDomain)
+        public ILogger<DDNS> logger { get; set; }
+        public DDNS(string secretId, string secretKey, string domain, string subDomain, ILogger<DDNS> logger)
         {
             string host = "dnspod.tencentcloudapi.com";
             string service = "dnspod";
             requestClient = new RequestClient(secretId, secretKey, host, service);
+            this.logger = logger;
         }
 
         public async Task<(bool, DescribeRecordListResponse?)> QueryRecordList(string recordType)
@@ -33,7 +36,7 @@ namespace TomDan.ToolKit.Plugin.DDNS
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
         public async Task<RecordListItem?> GetCurrentRecord() => await QueryRecordList("AAAA") switch
@@ -106,16 +109,16 @@ namespace TomDan.ToolKit.Plugin.DDNS
 
                         if (changeResult)
                         {
-                            Console.WriteLine($"发现 IP 变化，解析时间：current_time:{DateTime.Now}");
+                            logger.LogError($"发现 IP 变化，解析时间：current_time:{DateTime.Now}");
                         }
                         else
                         {
-                            Console.WriteLine("更新 IP 状态失败");
+                            logger.LogError("更新 IP 状态失败");
                         }
                     }
                     else
                     {
-                        Console.WriteLine("IP 未发生变化");
+                        logger.LogError("IP 未发生变化");
                     }
                     break;
                 }
@@ -123,7 +126,7 @@ namespace TomDan.ToolKit.Plugin.DDNS
                 {
                     count--;
                     await Task.Delay(TimeSpan.FromSeconds(10));
-                    Console.WriteLine($"检查失败，正在重试第 {count} 次");
+                    logger.LogError($"检查失败，正在重试第 {count} 次");
 
                     if (count == 0)
                     {

@@ -43,7 +43,9 @@ namespace TomDan.ToolKit.PluginManagement
                     var strs = jsonPath.Split("\\");
                     var fileName = strs[strs.Length - 1];
                     var fileNameStrs = fileName.Split(".");
-                    var pluginName = fileNameStrs[0];
+                    var pluginNameArrays = fileNameStrs.Take(fileNameStrs.Length - 2).ToArray();
+                    var pluginName = string.Empty;
+                    pluginName = string.Join(".", pluginNameArrays);
                     foreach (string filename in Directory.GetFiles(path, $"{pluginName}.dll", SearchOption.AllDirectories))
                     {
                         pluginPaths.Add(filename);
@@ -111,15 +113,16 @@ namespace TomDan.ToolKit.PluginManagement
                 logger.LogError(ex.Message);
                 yield break;
             }
-            var tlist = new List<Type>();
+            /* var tlist = new List<Type>();
             foreach (var type in typeVector)
             {
-                if (type.GetInterface("IPlugin") != null)
+                var a = type.GetInterface("IPlugin");
+                if (a != null)
                 {
                     tlist.Add(type);
                 }
-            }
-            foreach (Type type in tlist)
+            } */
+            foreach (Type type in typeVector)
             {
                 if (type.GetInterface("IPlugin") != null)
                 {

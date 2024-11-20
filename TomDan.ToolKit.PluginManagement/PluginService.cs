@@ -7,7 +7,7 @@ namespace TomDan.ToolKit.PluginManagement
 {
     public class PluginService(PluginManager pluginManager, ILogger<PluginService> logger, AutoResetEvent autoResetEvent) : IHostedService
     {
-        private Task executingTask;
+        private Task? executingTask;
         private CancellationTokenSource cts = new CancellationTokenSource();
         public Task StopAsync(CancellationToken cancellationToken)
         {
@@ -49,12 +49,11 @@ namespace TomDan.ToolKit.PluginManagement
             services.AddSingleton<PluginManager>();
             services.AddSingleton<PluginContext>();
             services.AddSingleton<IEventAggregator, EventAggregator>();
-
             var pluginManager = new PluginManager();
             pluginManager.LoadPlugin(services, new Logger<PluginManager>(new LoggerFactory()));
             //插件服务托管
             services.AddHostedService<PluginService>();
-             
+
         }
     }
 }

@@ -43,7 +43,7 @@ namespace TomDan.ToolKit.Core
         private static void SetLogger(IServiceCollection services)
         {
             var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory()) 
+                .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
             services.AddLogging(loggingBuilder =>

@@ -16,7 +16,7 @@ namespace TestPluginA
 
         public int TimesExecute()
         {
-            Console.WriteLine( "asdf");
+            Console.WriteLine("asdf");
             eventAggregator.Publish("Plugin_A_Test", "this is PluginA ");
             return 0;
         }
@@ -39,8 +39,8 @@ namespace TestPluginA
         {
         }
 
-    
-        public bool Initialize(IEventAggregator eventAggregator, IServiceProvider serviceProvider)
+
+        public bool Initialize(IEventAggregator eventAggregator, IServiceProvider serviceProvider, object baseData)
         {
             this.eventAggregator = eventAggregator;
             eventAggregator.Subscribe("Plugin_B_Test", (Object) => Plugin_B_Test((string)Object));
@@ -63,5 +63,7 @@ namespace TestPluginA
         public void ConfigureServices(IServiceCollection services, Assembly assembly)
         {
         }
+
+
     }
 }
