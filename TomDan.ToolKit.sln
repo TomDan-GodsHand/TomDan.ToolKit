@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPluginA", "TestPluginA\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomDan.ToolKit.Plugin.DDNS", "TomDan.ToolKit.Plugin.DDNS\TomDan.ToolKit.Plugin.DDNS.csproj", "{B193DE7F-3D62-4980-AEB3-63B31549024C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomDan.ToolKit.Plugin.MQTTBroker", "TomDan.ToolKit.Plugin.MQTTBroker\TomDan.ToolKit.Plugin.MQTTBroker.csproj", "{047D8486-1707-46DC-9A7F-748852BD2DB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{B193DE7F-3D62-4980-AEB3-63B31549024C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B193DE7F-3D62-4980-AEB3-63B31549024C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B193DE7F-3D62-4980-AEB3-63B31549024C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{047D8486-1707-46DC-9A7F-748852BD2DB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{047D8486-1707-46DC-9A7F-748852BD2DB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{047D8486-1707-46DC-9A7F-748852BD2DB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{047D8486-1707-46DC-9A7F-748852BD2DB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
