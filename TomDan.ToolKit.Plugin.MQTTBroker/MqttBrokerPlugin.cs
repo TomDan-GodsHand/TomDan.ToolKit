@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MQTTnet.Formatter.V3;
 using Tomdan.ToolKit.Plugin.Base;
 
 namespace TomDan.ToolKit.Plugin.MQTTBroker;
@@ -14,10 +15,12 @@ public class MqttBrokerPlugin : IPlugin
     {
         this.logger = logger;
     }
+    public MqttBrokerPlugin() { }
     public string PluginName => "Mqtt Broker";
 
     public string Version => "1.0.0.0";
 
+    public MqttBroker mqttBroker { get; set; }
     public string Description => "A Simple Mqtt broker by TomDan use Mqttnet ";
 
     public bool AfterCore()
@@ -38,14 +41,16 @@ public class MqttBrokerPlugin : IPlugin
     {
         try
         {
-
+            mqttBroker = new(serviceProvider.GetService<ILogger<MqttBroker>>());
+            mqttBroker.ConfigMqttServer("127.0.0.1", 1883);
+            mqttBroker.AddUser("TomDan", "");
+            mqttBroker.StartMqtt();
             return true;
         }
         catch (Exception ex)
         {
             throw new PluginException(ex.Message);
         }
-        return false;
     }
 
     public bool Start()

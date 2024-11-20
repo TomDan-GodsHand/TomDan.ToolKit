@@ -1,17 +1,20 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <SelfContained>true</SelfContained>
-	  <PlatformTarget>x64</PlatformTarget>
-	  <PublishAot>true</PublishAot>
+    <PlatformTarget>x64</PlatformTarget>
+    <PublishAot>true</PublishAot>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tomdan.ToolKit.Plugin.Base\Tomdan.ToolKit.Plugin.Base.csproj" >
+    <ProjectReference Include="..\Tomdan.ToolKit.Plugin.Base\Tomdan.ToolKit.Plugin.Base.csproj">
       <Private>false</Private>
-		  <ExcludeAssets>runtime</ExcludeAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MQTTnet" Version="5.0.0.1214-rc"/>
+    <PackageReference Include="MQTTnet.Server" Version="5.0.0.1214-rc"/>
   </ItemGroup>
 </Project>
