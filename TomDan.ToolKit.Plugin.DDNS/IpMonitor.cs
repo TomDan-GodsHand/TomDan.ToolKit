@@ -46,7 +46,14 @@ namespace TomDan.ToolKit.Plugin.DDNS
                         {
                             count--;
                             await Task.Delay(TimeSpan.FromSeconds(10));
-                            logger.LogWarning($"检查失败, 正在重试第 {count} 次");
+                            logger.LogWarning($"检查失败, 正在重试第 {11 - count} 次");
+                        }
+                        if (count == 1)
+                        {
+                            logger.LogWarning($"IP检查失败10次,暂停5分钟后检查");
+                            await Task.Delay(TimeSpan.FromMinutes(5));
+                            count = 10;
+
                         }
                     }
                     catch { }

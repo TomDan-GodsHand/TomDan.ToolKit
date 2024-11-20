@@ -20,7 +20,7 @@ namespace TomDan.ToolKit.Core
                 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
                 // 插件管理器注入
 
-                SetLogger(builder.Services);
+                // SetLogger(builder.Services);
                 builder.Services.AddSingleton<AutoResetEvent>(new AutoResetEvent(false));
                 builder.Services.AddLogging();
                 PluginService.InitPluginManager(builder.Services);
@@ -39,19 +39,19 @@ namespace TomDan.ToolKit.Core
                 Console.WriteLine(ex);
             }
         }
-
-        private static void SetLogger(IServiceCollection services)
-        {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .Build();
-            services.AddLogging(loggingBuilder =>
-            {
-                loggingBuilder.ClearProviders();
-                loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-                loggingBuilder.AddNLog(config);
-            }).BuildServiceProvider();
-        }
+        /* 
+                private static void SetLogger(IServiceCollection services)
+                {
+                    var config = new ConfigurationBuilder()
+                        .SetBasePath(basePath: Directory.GetCurrentDirectory())
+                        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                        .Build();
+                    services.AddLogging(loggingBuilder =>
+                    {
+                        loggingBuilder.ClearProviders();
+                        loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                        loggingBuilder.AddNLog(config);
+                    }).BuildServiceProvider();
+                } */
     }
 }
