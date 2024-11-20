@@ -1,9 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <SelfContained>true</SelfContained>
+	  <PlatformTarget>x64</PlatformTarget>
+	  <PublishAot>true</PublishAot>
   </PropertyGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\Tomdan.ToolKit.Plugin.Base\Tomdan.ToolKit.Plugin.Base.csproj" >
+      <Private>false</Private>
+		  <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
