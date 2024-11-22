@@ -1,0 +1,16 @@
+{
+    "plugins": [
+        {
+            "source": "D:\\WorkPlace\\TomDan.ToolKit\\TestPluginA\\bin\\Debug\\net8.0",
+            "destination": "D:\\WorkPlace\\TomDan.ToolKit\\TomDan.ToolKit\\bin\\Debug\\net8.0\\Plugins\\TestA"
+        },
+        {
+            "source": "D:\\WorkPlace\\TomDan.ToolKit\\TomDan.ToolKit.Plugin.MQTTBroker\\bin\\Debug\\net8.0",
+            "destination": "D:\\WorkPlace\\TomDan.ToolKit\\TomDan.ToolKit\\bin\\Debug\\net8.0\\Plugins\\MQTTBroker"
+        },
+        {
+            "source": "D:\\WorkPlace\\TomDan.ToolKit\\TomDan.ToolKit.Plugin.DDNS\\bin\\Debug\\net8.0",
+            "destination": "D:\\WorkPlace\\TomDan.ToolKit\\TomDan.ToolKit\\bin\\Debug\\net8.0\\Plugins\\DDNS"
+        }
+    ]
+}

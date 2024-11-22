@@ -5,7 +5,15 @@
     <Nullable>enable</Nullable>
     <SelfContained>true</SelfContained>
     <PlatformTarget>x64</PlatformTarget>
-    <PublishAot>true</PublishAot>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>portable</DebugType>
+    <IsAotCompatible>True</IsAotCompatible>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tomdan.ToolKit.Plugin.Base\Tomdan.ToolKit.Plugin.Base.csproj">

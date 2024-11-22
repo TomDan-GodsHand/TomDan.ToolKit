@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MQTTnet.Formatter;
 using MQTTnet.Formatter.V3;
 using Tomdan.ToolKit.Plugin.Base;
 
@@ -42,9 +43,8 @@ public class MqttBrokerPlugin : IPlugin
         try
         {
             mqttBroker = new(serviceProvider.GetService<ILogger<MqttBroker>>());
-            mqttBroker.ConfigMqttServer("127.0.0.1", 1883);
+            mqttBroker.ConfigMqttServer("192.168.3.41", 1883);
             mqttBroker.AddUser("TomDan", "");
-            mqttBroker.StartMqtt();
             return true;
         }
         catch (Exception ex)
@@ -55,6 +55,10 @@ public class MqttBrokerPlugin : IPlugin
 
     public bool Start()
     {
+        if (mqttBroker == null)
+            return false;
+        mqttBroker.StartMqtt();
+
         return true;
     }
 
