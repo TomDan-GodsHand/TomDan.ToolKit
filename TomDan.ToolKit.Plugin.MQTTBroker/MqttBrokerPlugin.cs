@@ -43,7 +43,7 @@ public class MqttBrokerPlugin : IPlugin
         try
         {
             mqttBroker = new(serviceProvider.GetService<ILogger<MqttBroker>>());
-            mqttBroker.ConfigMqttServer("192.168.3.41", 1883);
+            mqttBroker.ConfigMqttServer("127.0.0.1", 1883);
             mqttBroker.AddUser("TomDan", "");
             return true;
         }
