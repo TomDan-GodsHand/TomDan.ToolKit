@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Expressions;
 using System.Net;
 using Microsoft.Extensions.Logging;
 
@@ -63,31 +64,37 @@ namespace TomDan.ToolKit.Plugin.DDNS
                 count = 10;
                 while (count > 0)
                 {
-                    var recordItem = await DDNS.GetCurrentRecord();
-
-                    if (recordItem != null)
+                    await Task.Delay(1000);
+                    try
                     {
-                        if (recordItem.Value != CurrentIp.ToString())
+
+                        var recordItem = await DDNS.GetCurrentRecord();
+
+                        if (recordItem != null)
                         {
-                            var res = await DDNS.ChangeRecord(recordItem, CurrentIp.ToString());
+                            if (recordItem.Value != CurrentIp.ToString())
+                            {
+                                var res = await DDNS.ChangeRecord(recordItem, CurrentIp.ToString());
 
-                            if (res)
-                            {
-                                logger.LogInformation($"更新 IP 状态: {res}");
+                                if (res)
+                                {
+                                    logger.LogInformation($"更新 IP 状态: {res}");
+                                }
+                                else
+                                {
+                                    logger.LogInformation("更新失败");
+                                }
                             }
-                            else
-                            {
-                                logger.LogInformation("更新失败");
-                            }
+                            break;
                         }
-                        break;
+                        else
+                        {
+                            count--;
+                            await Task.Delay(TimeSpan.FromSeconds(10));
+                            logger.LogWarning($"检查失败, 正在重试第 {count} 次");
+                        }
                     }
-                    else
-                    {
-                        count--;
-                        await Task.Delay(TimeSpan.FromSeconds(10));
-                        logger.LogWarning($"检查失败, 正在重试第 {count} 次");
-                    }
+                    catch (Exception ex) { logger.LogError(ex.Message, ex); }
                 }
             }
         }

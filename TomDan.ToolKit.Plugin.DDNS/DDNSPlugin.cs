@@ -10,14 +10,14 @@ namespace TomDan.ToolKit.Plugin.DDNS;
 public class DDNSPlugin : IPlugin
 {
     string IPlugin.PluginName => "DDNS";
-    public string configPath = "bin\\Debug\\net8.0\\Plugins\\DDNS\\config.json";
+    public string configPath = "Plugins\\DDNS\\config.json";
 
     public DDNSPlugin(ILogger<DDNSPlugin> logger)
     {
         this.logger = logger;
     }
 
-    public DDNSPlugin(){}
+    public DDNSPlugin() { }
     string IPlugin.Version => "1.0.0.0";
 
     string IPlugin.Description => "A Simple DDNS Tool By TomDan Running in TomDan.ToolKit Plugin System";
