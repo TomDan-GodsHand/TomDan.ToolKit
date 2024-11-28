@@ -21,6 +21,11 @@
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
   </ItemGroup>
+    <ItemGroup>
+    <None Update="config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MQTTnet" Version="5.0.0.1214-rc"/>
     <PackageReference Include="MQTTnet.Server" Version="5.0.0.1214-rc"/>

@@ -5,8 +5,6 @@ using Microsoft.Extensions.Logging;
 using Tomdan.ToolKit.Plugin.Base;
 using TomDan.ToolKit.Core.Core;
 using TomDan.ToolKit.PluginManagement;
-using NLog;
-using NLog.Extensions.Logging;
 
 namespace TomDan.ToolKit.Core
 {

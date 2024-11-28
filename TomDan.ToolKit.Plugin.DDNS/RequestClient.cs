@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TomDan.ToolKit.Plugin.DDNS;
 namespace TomDan.ToolKit.Plugin.DDNS
@@ -43,19 +44,20 @@ namespace TomDan.ToolKit.Plugin.DDNS
                 // 获取时间戳和日期
                 var timestamp = new DateTimeOffset(now).ToUnixTimeSeconds();
                 var date = now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-
+                var url = "https://" + Host;
                 // 计算认证信息
                 var authorization = MakePostAuthorization(timestamp, date, payloadJson);
                 // 设置请求头
-                var request = new HttpRequestMessage(HttpMethod.Post, $"https://{Host}")
-                {
-                    Content = new StringContent(payloadJson, Encoding.UTF8, "application/json")
-                };
-                request.Headers.Add("Authorization", authorization);
+                var request = new HttpRequestMessage();
+                request.Method = HttpMethod.Post;
+                request.Headers.Add("Host", Host);
+                request.Headers.TryAddWithoutValidation("Authorization", authorization);
                 request.Headers.Add("X-TC-Action", action);
                 request.Headers.Add("X-TC-Timestamp", timestamp.ToString());
                 request.Headers.Add("X-TC-Version", Version);
                 request.Headers.Add("X-TC-Region", Region);
+                request.Headers.Add("X-TC-RequestClient", "SDK_NET_BAREBONE");
+                request.RequestUri = new Uri(url);
                 var client = new HttpClient();
                 var response = await client.SendAsync(request);
                 // 确保请求成功
@@ -63,12 +65,12 @@ namespace TomDan.ToolKit.Plugin.DDNS
 
                 // 读取并反序列化响应
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                var result = System.Text.Json.JsonSerializer.Deserialize<TcResponse<R>>(jsonResponse);
+                var result = JsonConvert.DeserializeObject<TcResponse<R>>(jsonResponse);
                 return (true, result);
             }
             catch (Exception ex)
             {
-                return (false, null);
+                throw ex;
             }
         }
         public string MakePostAuthorization(long timestamp, string date, string payload)

@@ -23,7 +23,7 @@ namespace TomDan.ToolKit.Plugin.DDNS
             try
             {
                 var (success, response) = await requestClient.Send<DescribeRecordList, DescribeRecordListResponse>(
-                    "DiscribeRecordList",
+                    "DescribeRecordList",
                     new() { Domain = domain, RecordType = recordType });
                 if (success)
                 {

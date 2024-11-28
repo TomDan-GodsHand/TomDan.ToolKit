@@ -12,17 +12,21 @@ namespace TomDan.ToolKit.Plugin.MQTTBroker;
 public class MqttBrokerPlugin : IPlugin
 {
     public ILogger<MqttBrokerPlugin> logger { get; }
-    public MqttBrokerPlugin(ILogger<MqttBrokerPlugin> logger)
-    {
-        this.logger = logger;
-    }
-    public MqttBrokerPlugin() { }
     public string PluginName => "Mqtt Broker";
 
     public string Version => "1.0.0.0";
 
     public MqttBroker mqttBroker { get; set; }
     public string Description => "A Simple Mqtt broker by TomDan use Mqttnet ";
+
+    public string ConfigPath => AppDomain.CurrentDomain.BaseDirectory + "Plugins\\MQTTBroker\\config.json";
+
+    public PluginConfig Configs { get; set; }
+    public MqttBrokerPlugin(ILogger<MqttBrokerPlugin> logger)
+    {
+        this.logger = logger;
+    }
+    public MqttBrokerPlugin() { }
 
     public bool AfterCore()
     {
@@ -36,14 +40,17 @@ public class MqttBrokerPlugin : IPlugin
 
     public void ConfigureServices(IServiceCollection services, Assembly assembly)
     {
+       
     }
 
     public bool Initialize(IEventAggregator eventAggregator, IServiceProvider serviceProvider = null, object baseData = null)
     {
         try
         {
+ Configs = new();
+        Configs.InitConfig(ConfigPath);
             mqttBroker = new(serviceProvider.GetService<ILogger<MqttBroker>>());
-            mqttBroker.ConfigMqttServer("127.0.0.1", 1883);
+            mqttBroker.ConfigMqttServer(Configs.Data["LocalMqttServerIP"], int.Parse(Configs.Data["LocalMqttServerPort"]));
             mqttBroker.AddUser("TomDan", "");
             return true;
         }

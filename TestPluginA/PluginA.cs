@@ -14,6 +14,10 @@ namespace TestPluginA
 
         public string Description => "A Plugin";
 
+        public string ConfigPath => throw new NotImplementedException();
+
+        public PluginConfig Configs { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public int TimesExecute()
         {
             Console.WriteLine("asdf");

@@ -8,6 +8,8 @@ namespace Tomdan.ToolKit.Plugin.Base
         string PluginName { get; }
         string Version { get; }
         string Description { get; }
+        string ConfigPath { get; }
+        PluginConfig Configs { get; set; }
         int TimesExecute();
 
         /// <summary>

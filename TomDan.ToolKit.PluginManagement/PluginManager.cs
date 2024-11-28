@@ -68,8 +68,13 @@ namespace TomDan.ToolKit.PluginManagement
                 AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
                 IEnumerable<string> plugins = pluginPaths.SelectMany(pluginPath =>
                 {
-                    Assembly pluginAssembly = LoadPlugin(pluginPath, logger);
-                    return CreatePlugins(pluginAssembly, services, logger);
+                    try
+                    {
+                        Assembly pluginAssembly = LoadPlugin(pluginPath, logger);
+                        return CreatePlugins(pluginAssembly, services, logger);
+                    }
+                    catch { }
+                    return null;
                 }).ToList();
                 var missPluginsList = pluginPaths.Except(plugins).ToList();
                 logger.LogInformation($"Plugin Load Success ({plugins.Count()}) :  " + string.Join("\r\n\t" + plugins));

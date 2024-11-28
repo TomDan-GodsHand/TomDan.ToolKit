@@ -64,7 +64,7 @@ namespace TomDan.ToolKit.Plugin.DDNS
                 count = 10;
                 while (count > 0)
                 {
-                    await Task.Delay(1000);
+                    await Task.Delay(10000);
                     try
                     {
 
