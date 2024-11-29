@@ -148,6 +148,7 @@ namespace TomDan.ToolKit.Plugin.DDNS
                 else
                 {
                     logger.LogInformation("IP 相同，时间未变");
+                    await Task.Delay(300000);
                 }
                 return true;
             }

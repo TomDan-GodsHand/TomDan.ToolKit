@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -42,22 +43,26 @@ namespace TomDan.ToolKit.Plugin.DDNS
                 var payloadJson = JsonConvert.SerializeObject(payload);
 
                 // 获取时间戳和日期
-                var timestamp = new DateTimeOffset(now).ToUnixTimeSeconds();
                 var date = now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
                 var url = "https://" + Host;
+                var contentType = "application/json; charset=utf-8";
+                var timestamp = ((int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds).ToString();
                 // 计算认证信息
-                var authorization = MakePostAuthorization(timestamp, date, payloadJson);
+                var auth = GetAuth(SecretId, SecretKey, Host, contentType, timestamp, payloadJson);
                 // 设置请求头
                 var request = new HttpRequestMessage();
                 request.Method = HttpMethod.Post;
                 request.Headers.Add("Host", Host);
-                request.Headers.TryAddWithoutValidation("Authorization", authorization);
-                request.Headers.Add("X-TC-Action", action);
-                request.Headers.Add("X-TC-Timestamp", timestamp.ToString());
+                request.Headers.Add("X-TC-Timestamp", timestamp);
                 request.Headers.Add("X-TC-Version", Version);
+                request.Headers.Add("X-TC-Action", action);
                 request.Headers.Add("X-TC-Region", Region);
+                request.Headers.Add("X-TC-Token", "");
                 request.Headers.Add("X-TC-RequestClient", "SDK_NET_BAREBONE");
+                request.Headers.TryAddWithoutValidation("Authorization", auth);
+
                 request.RequestUri = new Uri(url);
+                request.Content = new StringContent(payloadJson, MediaTypeWithQualityHeaderValue.Parse(contentType));
                 var client = new HttpClient();
                 var response = await client.SendAsync(request);
                 // 确保请求成功
@@ -73,61 +78,63 @@ namespace TomDan.ToolKit.Plugin.DDNS
                 throw ex;
             }
         }
-        public string MakePostAuthorization(long timestamp, string date, string payload)
+        string GetAuth(string secretId, string secretKey, string host, string contentType, string timestamp, string body)
         {
-            /* first */
-            string httpRequestMethod = "POST";
-            string canonicalUri = "/";
-            string canonicalQueryString = "";
-            string canonicalHeaders = $"content-type:application/json; charset=utf-8\nhost:{Host}\n";
-            string signedHeaders = "content-type;host";
-            string hashedRequestPayload = ComputeSha256Hash(payload);
+            var canonicalURI = "/";
+            var canonicalHeaders = "content-type:" + contentType + "\nhost:" + host + "\n";
+            var signedHeaders = "content-type;host";
+            var hashedRequestPayload = Sha256Hex(body);
+            var canonicalRequest = "POST" + "\n"
+                                          + canonicalURI + "\n"
+                                          + "\n"
+                                          + canonicalHeaders + "\n"
+                                          + signedHeaders + "\n"
+                                          + hashedRequestPayload;
 
-            string canonicalRequest = $"{httpRequestMethod}\n{canonicalUri}\n{canonicalQueryString}\n{canonicalHeaders}\n{signedHeaders}\n{hashedRequestPayload}";
+            var algorithm = "TC3-HMAC-SHA256";
+            var date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(int.Parse(timestamp))
+                .ToString("yyyy-MM-dd");
+            var service = host.Split(".")[0];
+            var credentialScope = date + "/" + service + "/" + "tc3_request";
+            var hashedCanonicalRequest = Sha256Hex(canonicalRequest);
+            var stringToSign = algorithm + "\n"
+                                         + timestamp + "\n"
+                                         + credentialScope + "\n"
+                                         + hashedCanonicalRequest;
 
-            /* second */
-            string algorithm = "TC3-HMAC-SHA256";
-            string credentialScope = $"{date}/{Service}/tc3_request";
-            string hashedCanonicalRequest = ComputeSha256Hash(canonicalRequest);
+            var tc3SecretKey = Encoding.UTF8.GetBytes("TC3" + secretKey);
+            var secretDate = HmacSha256(tc3SecretKey, Encoding.UTF8.GetBytes(date));
+            var secretService = HmacSha256(secretDate, Encoding.UTF8.GetBytes(service));
+            var secretSigning = HmacSha256(secretService, Encoding.UTF8.GetBytes("tc3_request"));
+            var signatureBytes = HmacSha256(secretSigning, Encoding.UTF8.GetBytes(stringToSign));
+            var signature = BitConverter.ToString(signatureBytes).Replace("-", "").ToLower();
 
-            string stringToSign = $"{algorithm}\n{timestamp}\n{credentialScope}\n{hashedCanonicalRequest}";
-
-            /* third */
-            byte[] secretDate = HmacSha256(Encoding.UTF8.GetBytes(date), Encoding.UTF8.GetBytes($"TC3{SecretKey}"));
-            byte[] secretService = HmacSha256(Encoding.UTF8.GetBytes(Service), secretDate);
-            byte[] secretSigning = HmacSha256(Encoding.UTF8.GetBytes("tc3_request"), secretService);
-
-            string signature = ComputeHmacSha256Hex(Encoding.UTF8.GetBytes(stringToSign), secretSigning);
-
-            /* forth */
-            string authorization = $"TC3-HMAC-SHA256 Credential={SecretId}/{credentialScope},SignedHeaders={signedHeaders},Signature={signature}";
-            return authorization;
+            return algorithm + " "
+                             + "Credential=" + secretId + "/" + credentialScope + ", "
+                             + "SignedHeaders=" + signedHeaders + ", "
+                             + "Signature=" + signature;
         }
 
-        private static string ComputeSha256Hash(string input)
+        private byte[] HmacSha256(byte[] key, byte[] msg)
         {
-            using (var sha256 = SHA256.Create())
+            using (HMACSHA256 mac = new HMACSHA256(key))
             {
-                var bytes = Encoding.UTF8.GetBytes(input);
-                var hash = sha256.ComputeHash(bytes);
-                return BitConverter.ToString(hash).Replace("-", "").ToLower(); // Convert to hex string
+                return mac.ComputeHash(msg);
             }
         }
 
-        private static byte[] HmacSha256(byte[] message, byte[] key)
+        private string Sha256Hex(string s)
         {
-            using (var hmac = new HMACSHA256(key))
+            using (SHA256 algo = SHA256.Create())
             {
-                return hmac.ComputeHash(message); // Return raw byte array
-            }
-        }
+                byte[] hashbytes = algo.ComputeHash(Encoding.UTF8.GetBytes(s));
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < hashbytes.Length; ++i)
+                {
+                    builder.Append(hashbytes[i].ToString("x2"));
+                }
 
-        private static string ComputeHmacSha256Hex(byte[] message, byte[] key)
-        {
-            using (var hmac = new HMACSHA256(key))
-            {
-                var hash = hmac.ComputeHash(message);
-                return BitConverter.ToString(hash).Replace("-", "").ToLower(); // Convert to hex string
+                return builder.ToString();
             }
         }
     }

@@ -16,6 +16,8 @@ namespace TomDan.ToolKit.Plugin.DDNS
             string service = "dnspod";
             requestClient = new RequestClient(secretId, secretKey, host, service);
             this.logger = logger;
+            this.domain = domain;
+            this.subDomain = subDomain;
         }
 
         public async Task<(bool, DescribeRecordListResponse?)> QueryRecordList(string recordType)
@@ -75,22 +77,21 @@ namespace TomDan.ToolKit.Plugin.DDNS
                     RecordType = recordItem.Type,
                     RecordLine = recordItem.Line,
                     RecordId = recordItem.RecordId,
-                    SubDomain = recordItem.Name,  // 使用值，不是 Some/None
-                    DomainId = null,
-                    RecordLineId = null,
-                    MX = null,
-                    TTL = null,
-                    Weight = null,
-                    Status = null
+                    SubDomain = recordItem.Name,
+
                 });
                 if (success)
+                {
+                    if (res.response.Error != null)
+                        throw new Exception($"{res?.response?.Error?.Message}");
                     return true;
+                }
                 else
                     return false;
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
