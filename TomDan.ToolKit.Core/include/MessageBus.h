@@ -1,0 +1,29 @@
+#ifndef MESSAGEBUS_H
+#define MESSAGEBUS_H
+
+#include <map>
+#include <string>
+#include <vector>
+#include <functional>
+#include "IMessageBus.h"
+
+// 订阅发布模式的消息总线实现
+class MessageBus : public IMessageBus {
+private:
+    struct Subscription {
+        int id;
+        std::string topic;
+        std::function<void(const std::string&)> callback;
+    };
+    
+    std::map<std::string, std::vector<int>> topicSubscriptions; // 主题到订阅ID的映射
+    std::map<int, Subscription> subscriptions; // 订阅ID到订阅信息的映射
+    int nextSubscriptionId = 1;
+
+public:
+    void publish(const std::string& topic, const std::string& message) override;
+    int subscribe(const std::string& topic, std::function<void(const std::string&)> callback) override;
+    void unsubscribe(int subscriptionId) override;
+};
+
+#endif // MESSAGEBUS_H

@@ -1,0 +1,57 @@
+#include "IPlugin.h"
+#include "IMessageBus.h"
+#include "HttpServer.h"
+#include <iostream>
+#include <string>
+#include <functional>
+#include <atomic>
+
+// 简单的 HTTP 服务器框架
+// 插件主类
+class HttpServerPlugin : public IPlugin {
+private:
+    IMessageBus* messageBus;
+    HttpServer server;
+    std::atomic<bool> initialized;
+public:
+    HttpServerPlugin(IMessageBus* bus) : messageBus(bus), server(8080), initialized(false) {}
+    
+    std::string getName() const override {
+        return "HttpServerPlugin";
+    }
+    
+    void initialize() override {
+        if (initialized) return;
+        
+        std::cout << "Initializing " << getName() << " on port " << server.getPort() << std::endl;
+        
+        // 启动 HTTP 服务器
+        server.start();
+        
+        // 通过消息总线发布插件启动事件
+        messageBus->publish("plugin_events", "HttpServerPlugin initialized");
+        
+        initialized = true;
+    }
+    
+    void execute() override {
+        std::cout << "Executing " << getName() << std::endl;
+        // 可以在这里执行周期性任务，或者什么都不做（HTTP 服务器已在后台运行）
+        // 发布执行事件
+        messageBus->publish("plugin_events", "HttpServerPlugin executed");
+    }
+    
+    bool heartbeat() override {
+        // 简单的健康检查：服务器是否在运行
+        return initialized;
+    }
+};
+
+// 导出函数
+extern "C" PLUGIN_API IPlugin* createPlugin(void* context) {
+    return new HttpServerPlugin(static_cast<IMessageBus*>(context));
+}
+
+extern "C" PLUGIN_API void destroyPlugin(IPlugin* plugin) {
+    delete plugin;
+}

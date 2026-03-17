@@ -1,5 +1,4 @@
 # Xmake cache
-.xmake/*
 .xmake/
 build/
 
