@@ -6,4 +6,5 @@ target("ExamplePlugin")
     add_includedirs("../TomDan.ToolKit.Interface/include")
     add_deps("TomDan.ToolKit.Interface")
     add_files("src/*.cpp")
-    set_targetdir("../build/linux/x86_64/debug/plugins")
+    -- 根据平台和架构设置目标目录
+    set_targetdir("../build/$(plat)/$(arch)/$(mode)/plugins")

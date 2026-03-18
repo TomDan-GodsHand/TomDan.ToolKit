@@ -9,5 +9,11 @@ target("TomDan.ToolKit.HttpServer")
 
     add_packages("cpp-httplib")
 
-    set_targetdir("../build/linux/x86_64/debug/plugins")
+    -- 平台特定的系统链接
+    if is_plat("windows", "mingw") then
+        add_syslinks("ws2_32")
+    end
+
+    -- 根据平台和架构设置目标目录
+    set_targetdir("../build/$(plat)/$(arch)/$(mode)/plugins")
 

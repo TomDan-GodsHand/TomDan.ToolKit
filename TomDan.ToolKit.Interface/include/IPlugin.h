@@ -3,19 +3,21 @@
 
 #include <string>
 
+class IPlugin;
 // 插件导出宏
-#define PLUGIN_API
-
-#ifdef _WIN32
-    #ifdef PLUGIN_EXPORTS
-        #define PLUGIN_API __declspec(dllexport)
+#ifndef PLUGIN_API
+    #ifdef _WIN32
+        #ifdef PLUGIN_EXPORTS
+            #define PLUGIN_API __declspec(dllexport)
+        #else
+            #define PLUGIN_API __declspec(dllimport)
+        #endif
     #else
-        #define PLUGIN_API __declspec(dllimport)
+        #define PLUGIN_API
     #endif
 #endif
 
 // 前向声明
-class IPlugin;
 
 // 插件创建函数类型
 typedef IPlugin* (*CreatePluginFunc)(void* context);
