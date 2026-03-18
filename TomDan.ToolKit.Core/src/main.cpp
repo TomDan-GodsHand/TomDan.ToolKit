@@ -1,12 +1,11 @@
 #include <iostream>
-#include <memory>
 #include <thread>
 #include <chrono>
 #include <atomic>
 #include <mutex>
 #include <condition_variable>
-#include "../include/PluginManager.h"
-#include "../include/MessageBus.h"
+#include "PluginManager.h"
+#include "MessageBus.h"
 
 std::atomic<bool> g_running(true);
 std::mutex g_mutex;
