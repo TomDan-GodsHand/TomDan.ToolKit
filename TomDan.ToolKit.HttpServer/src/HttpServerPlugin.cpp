@@ -1,6 +1,8 @@
+#include "ExampleController.h"
 #include "IPlugin.h"
 #include "IMessageBus.h"
 #include "HttpServer.h"
+#include "ControllerManager.h"
 #include <iostream>
 #include <string>
 #include <functional>
@@ -13,6 +15,13 @@ private:
     IMessageBus* messageBus;
     HttpServer server;
     std::atomic<bool> initialized;
+    ControllerManager controllerManager;
+
+    void RegisterAllController() {
+        controllerManager.addController(std::make_unique<ExampleController>());
+        controllerManager.registerAllRoutes(&server);
+    }
+
 public:
     HttpServerPlugin(IMessageBus* bus) : messageBus(bus), server(8080), initialized(false) {}
     
@@ -27,6 +36,8 @@ public:
         
         // 启动 HTTP 服务器
         server.start();
+
+        RegisterAllController();
         
         // 通过消息总线发布插件启动事件
         messageBus->publish("plugin_events", "HttpServerPlugin initialized");

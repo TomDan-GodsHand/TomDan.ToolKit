@@ -8,37 +8,14 @@
 #include <functional>
 #include <string>
 #include <utility>
+#include "HttpMethod.h"
+
 
 namespace httplib { class Server; }
 
-enum class HttpMethod { GET, POST, PUT, DELETE, PATCH };
+// 前向声明
+class IController;
 
-struct RouteInfo {
-    HttpMethod method;
-    std::string path;
-    std::function<std::string(const std::string&, const std::string&)> handler;
-};
-
-// 通过宏模拟 C# 特性 (Attribute) 风格的路由注册。
-// 使用方式：
-//   HTTP_GET(getRoot, "/")
-//   std::string getRoot(const std::string& path, const std::string& body);
-// 然后在控制器注册函数中调用 REGISTER_ROUTE(GET, getRoot);
-
-#define HTTP_ROUTE(method, name, path) \
-    static inline void __register_##method##_##name(HttpServer* server, auto* instance) { \
-        server->addRoute(HttpMethod::method, path, [instance](const std::string& p, const std::string& b) { \
-            return instance->name(p, b); \
-        }); \
-    }
-
-#define HTTP_GET(name, path) HTTP_ROUTE(GET, name, path)
-#define HTTP_POST(name, path) HTTP_ROUTE(POST, name, path)
-#define HTTP_PUT(name, path) HTTP_ROUTE(PUT, name, path)
-#define HTTP_DELETE(name, path) HTTP_ROUTE(DELETE, name, path)
-#define HTTP_PATCH(name, path) HTTP_ROUTE(PATCH, name, path)
-
-#define REGISTER_ROUTE(method, name) __register_##method##_##name(server, this)
 
 /**
  * @brief 简单的 HTTP 服务器框架
@@ -132,7 +109,81 @@ public:
      * 包括用户管理 API、健康检查等常见端点
      */
     void addExampleRoutes();
+    
+    /**
+     * @brief 注册控制器
+     * @param controller 控制器实例
+     */
+    void registerController(IController* controller);
 };
+
+// ============================================================================
+// 路由注册宏定义
+// ============================================================================
+
+/**
+ * @brief 通过宏模拟 C# 特性 (Attribute) 风格的路由注册。
+ * 
+ * 使用方式：
+ *   1. 在控制器类中定义路由方法：
+ *      HTTP_GET(getRoot, "/")
+ *      std::string getRoot(const std::string& path, const std::string& body);
+ *   
+ *   2. 在控制器类的 registerRoutes 方法中注册路由：
+ *      REGISTER_ROUTE(GET, getRoot);
+ */
+
+/**
+ * @brief 路由注册宏（基础宏）
+ * 
+ * 为指定的HTTP方法和路径生成注册函数
+ * 
+ * @param method HTTP方法（GET/POST/PUT/DELETE/PATCH）
+ * @param name 处理函数名称
+ * @param path 路由路径（支持正则表达式，如 "/api/users/:id"）
+ */
+#define HTTP_ROUTE(method, name, path) \
+    template<typename T> \
+    static inline void __register_##method##_##name(HttpServer* server, T* instance) { \
+        server->addRoute(HttpMethod::method, path, [instance](const std::string& p, const std::string& b) { \
+            return instance->name(p, b); \
+        }); \
+    }
+
+/**
+ * @brief GET方法路由注册宏
+ */
+#define HTTP_GET(name, path) HTTP_ROUTE(GET, name, path)
+
+/**
+ * @brief POST方法路由注册宏
+ */
+#define HTTP_POST(name, path) HTTP_ROUTE(POST, name, path)
+
+/**
+ * @brief PUT方法路由注册宏
+ */
+#define HTTP_PUT(name, path) HTTP_ROUTE(PUT, name, path)
+
+/**
+ * @brief DELETE方法路由注册宏
+ */
+#define HTTP_DELETE(name, path) HTTP_ROUTE(DELETE, name, path)
+
+/**
+ * @brief PATCH方法路由注册宏
+ */
+#define HTTP_PATCH(name, path) HTTP_ROUTE(PATCH, name, path)
+
+/**
+ * @brief 路由注册调用宏
+ * 
+ * 在控制器类的 registerRoutes 方法中调用，用于注册指定的路由
+ * 
+ * @param method HTTP方法
+ * @param name 处理函数名称
+ */
+#define REGISTER_ROUTE(method, name) __register_##method##_##name(server, this)
 
 
 #endif // HTTPSERVER_H

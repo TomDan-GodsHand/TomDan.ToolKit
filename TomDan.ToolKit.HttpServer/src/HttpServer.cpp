@@ -1,4 +1,5 @@
 #include "HttpServer.h"
+#include "ExampleController.h"
 #include <iostream>
 #include <thread>
 #include <httplib.h>
@@ -11,111 +12,6 @@
 #endif
 
 using namespace std;
-
-namespace {
-    // 示例控制器：通过宏模拟 C# 的特性/属性来注册路由
-    struct ExampleController {
-        static std::string getLastPathSegment(const std::string& path) {
-            size_t lastSlash = path.find_last_of('/');
-            return (lastSlash == std::string::npos ? path : path.substr(lastSlash + 1));
-        }
-
-        HTTP_GET(getRoot, "/")
-        std::string getRoot(const std::string& /*path*/, const std::string& /*body*/) {
-            return "HTTP Server is running! Available endpoints:\n"
-                   "GET  /api/hello - Get welcome message\n"
-                   "GET  /api/users - Get all users\n"
-                   "GET  /api/users/{id} - Get user by ID\n"
-                   "POST /api/users - Create new user\n"
-                   "PUT  /api/users/{id} - Update user\n"
-                   "DELETE /api/users/{id} - Delete user\n"
-                   "PATCH /api/users/{id}/status - Update user status";
-        }
-
-        HTTP_GET(getHello, "/api/hello")
-        std::string getHello(const std::string& /*path*/, const std::string& /*body*/) {
-            return "Hello from HTTP Server! Current time: " + std::to_string(time(nullptr));
-        }
-
-        HTTP_GET(getUsers, "/api/users")
-        std::string getUsers(const std::string& /*path*/, const std::string& /*body*/) {
-            return "[\n"
-                   "  {\"id\": 1, \"name\": \"Alice\", \"email\": \"alice@example.com\"},\n"
-                   "  {\"id\": 2, \"name\": \"Bob\", \"email\": \"bob@example.com\"},\n"
-                   "  {\"id\": 3, \"name\": \"Charlie\", \"email\": \"charlie@example.com\"}\n"
-                   "]";
-        }
-
-        HTTP_GET(getUserById, "/api/users/:id")
-        std::string getUserById(const std::string& path, const std::string& /*body*/) {
-            std::string idStr = getLastPathSegment(path);
-            int id = std::stoi(idStr);
-
-            if (id == 1) {
-                return "{\"id\": 1, \"name\": \"Alice\", \"email\": \"alice@example.com\", \"status\": \"active\"}";
-            } else if (id == 2) {
-                return "{\"id\": 2, \"name\": \"Bob\", \"email\": \"bob@example.com\", \"status\": \"active\"}";
-            } else {
-                return "{\"error\": \"User not found\", \"id\": " + idStr + "}";
-            }
-        }
-
-        HTTP_POST(createUser, "/api/users")
-        std::string createUser(const std::string& /*path*/, const std::string& body) {
-            if (body.empty()) {
-                return "{\"error\": \"Request body is required\"}";
-            }
-            return "{\"message\": \"User created successfully\", \"data\": " + body + ", \"id\": 100}";
-        }
-
-        HTTP_PUT(updateUser, "/api/users/:id")
-        std::string updateUser(const std::string& path, const std::string& body) {
-            if (body.empty()) {
-                return "{\"error\": \"Request body is required for update\"}";
-            }
-            std::string idStr = getLastPathSegment(path);
-            return "{\"message\": \"User updated successfully\", \"id\": " + idStr + ", \"data\": " + body + "}";
-        }
-
-        HTTP_DELETE(deleteUser, "/api/users/:id")
-        std::string deleteUser(const std::string& path, const std::string& /*body*/) {
-            std::string idStr = getLastPathSegment(path);
-            return "{\"message\": \"User deleted successfully\", \"id\": " + idStr + "}";
-        }
-
-        HTTP_PATCH(patchUserStatus, "/api/users/:id/status")
-        std::string patchUserStatus(const std::string& path, const std::string& body) {
-            if (body.empty()) {
-                return "{\"error\": \"Status data is required\"}";
-            }
-            std::string idStr = getLastPathSegment(path);
-            return "{\"message\": \"User status updated\", \"id\": " + idStr + ", \"status\": " + body + "}";
-        }
-
-        HTTP_GET(getHealth, "/health")
-        std::string getHealth(const std::string& /*path*/, const std::string& /*body*/) {
-            return "{\"status\": \"healthy\", \"timestamp\": " + std::to_string(time(nullptr)) + "}";
-        }
-
-        HTTP_GET(getServerInfo, "/api/server/info")
-        std::string getServerInfo(const std::string& /*path*/, const std::string& /*body*/) {
-            return "{\"name\": \"TomDan HTTP Server\", \"version\": \"1.0.0\", \"framework\": \"cpp-httplib\"}";
-        }
-
-        void registerRoutes(HttpServer* server) {
-            REGISTER_ROUTE(GET, getRoot);
-            REGISTER_ROUTE(GET, getHello);
-            REGISTER_ROUTE(GET, getUsers);
-            REGISTER_ROUTE(GET, getUserById);
-            REGISTER_ROUTE(POST, createUser);
-            REGISTER_ROUTE(PUT, updateUser);
-            REGISTER_ROUTE(DELETE, deleteUser);
-            REGISTER_ROUTE(PATCH, patchUserStatus);
-            REGISTER_ROUTE(GET, getHealth);
-            REGISTER_ROUTE(GET, getServerInfo);
-        }
-    };
-}
 
 HttpServer::HttpServer(int port)
     : running(false), port(port), server(new httplib::Server()) {}
@@ -185,7 +81,6 @@ void HttpServer::start() {
         std::cout << "[HttpServer] Server stopped" << std::endl;
     });
 
-    addExampleRoutes();
 }
 
 void HttpServer::stop() {
@@ -222,107 +117,9 @@ int HttpServer::getPort() const {
     return port;
 }
 
-
-// 添加示例接口
-void HttpServer::addExampleRoutes() {
-    // GET 示例：获取欢迎信息
-    addRoute(HttpMethod::GET, "/", [](const std::string& path, const std::string& body) -> std::string {
-        return "HTTP Server is running! Available endpoints:\n"
-               "GET  /api/hello - Get welcome message\n"
-               "GET  /api/users - Get all users\n"
-               "GET  /api/users/{id} - Get user by ID\n"
-               "POST /api/users - Create new user\n"
-               "PUT  /api/users/{id} - Update user\n"
-               "DELETE /api/users/{id} - Delete user\n"
-               "PATCH /api/users/{id}/status - Update user status";
-    });
-
-    // GET 示例：获取欢迎消息
-    addRoute(HttpMethod::GET, "/api/hello", [](const std::string& path, const std::string& body) -> std::string {
-        return "Hello from HTTP Server! Current time: " + std::to_string(time(nullptr));
-    });
-
-    // GET 示例：获取所有用户
-    addRoute(HttpMethod::GET, "/api/users", [](const std::string& path, const std::string& body) -> std::string {
-        return "[\n"
-               "  {\"id\": 1, \"name\": \"Alice\", \"email\": \"alice@example.com\"},\n"
-               "  {\"id\": 2, \"name\": \"Bob\", \"email\": \"bob@example.com\"},\n"
-               "  {\"id\": 3, \"name\": \"Charlie\", \"email\": \"charlie@example.com\"}\n"
-               "]";
-    });
-
-    // GET 示例：通过ID获取用户（使用正则表达式路径）
-    addRoute(HttpMethod::GET, "/api/users/:id", [](const std::string& path, const std::string& body) -> std::string {
-        // 从路径中提取ID
-        size_t lastSlash = path.find_last_of('/');
-        std::string idStr = path.substr(lastSlash + 1);
-        int id = std::stoi(idStr);
-        
-        if (id == 1) {
-            return "{\"id\": 1, \"name\": \"Alice\", \"email\": \"alice@example.com\", \"status\": \"active\"}";
-        } else if (id == 2) {
-            return "{\"id\": 2, \"name\": \"Bob\", \"email\": \"bob@example.com\", \"status\": \"active\"}";
-        } else {
-            return "{\"error\": \"User not found\", \"id\": " + idStr + "}";
-        }
-    });
-
-    // POST 示例：创建新用户
-    addRoute(HttpMethod::POST, "/api/users", [](const std::string& path, const std::string& body) -> std::string {
-        if (body.empty()) {
-            return "{\"error\": \"Request body is required\"}";
-        }
-        
-        // 模拟创建用户逻辑
-        return "{\"message\": \"User created successfully\", \"data\": " + body + ", \"id\": 100}";
-    });
-
-    // PUT 示例：更新用户
-    addRoute(HttpMethod::PUT, "/api/users/:id", [](const std::string& path, const std::string& body) -> std::string {
-        if (body.empty()) {
-            return "{\"error\": \"Request body is required for update\"}";
-        }
-        
-        // 从路径中提取ID
-        size_t lastSlash = path.find_last_of('/');
-        std::string idStr = path.substr(lastSlash + 1);
-        
-        return "{\"message\": \"User updated successfully\", \"id\": " + idStr + ", \"data\": " + body + "}";
-    });
-
-    // DELETE 示例：删除用户
-    addRoute(HttpMethod::DELETE, "/api/users/:id", [](const std::string& path, const std::string& body) -> std::string {
-        // 从路径中提取ID
-        size_t lastSlash = path.find_last_of('/');
-        std::string idStr = path.substr(lastSlash + 1);
-        
-        return "{\"message\": \"User deleted successfully\", \"id\": " + idStr + "}";
-    });
-
-    // PATCH 示例：部分更新用户状态
-    addRoute(HttpMethod::PATCH, "/api/users/:id/status", [](const std::string& path, const std::string& body) -> std::string {
-        if (body.empty()) {
-            return "{\"error\": \"Status data is required\"}";
-        }
-        
-        // 从路径中提取ID
-        size_t lastSlash = path.find_last_of('/');
-        std::string idStr = path.substr(0, lastSlash);
-        lastSlash = idStr.find_last_of('/');
-        idStr = idStr.substr(lastSlash + 1);
-        
-        return "{\"message\": \"User status updated\", \"id\": " + idStr + ", \"status\": " + body + "}";
-    });
-
-    // 健康检查端点
-    addRoute(HttpMethod::GET, "/health", [](const std::string& path, const std::string& body) -> std::string {
-        return "{\"status\": \"healthy\", \"timestamp\": " + std::to_string(time(nullptr)) + "}";
-    });
-
-    // 获取服务器信息
-    addRoute(HttpMethod::GET, "/api/server/info", [](const std::string& path, const std::string& body) -> std::string {
-        return "{\"name\": \"TomDan HTTP Server\", \"version\": \"1.0.0\", \"framework\": \"cpp-httplib\"}";
-    });
-
-    std::cout << "[HttpServer] Example routes added successfully" << std::endl;
+void HttpServer::registerController(IController* controller) {
+    if (controller) {
+        std::cout << "[HttpServer] Registering controller: " << controller->getName() << std::endl;
+        controller->registerRoutes(this);
+    }
 }
