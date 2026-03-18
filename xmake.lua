@@ -1,5 +1,7 @@
 set_config("compile_commands",true)
 
+set_languages("cxx23")
+
 add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate")
 

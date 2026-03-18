@@ -5,6 +5,10 @@ target("TomDan.ToolKit.Core")
     add_includedirs("include")
     add_deps("TomDan.ToolKit.Interface")
     add_files("src/*.cpp")
+    -- 平台特定的系统链接
+    if is_plat("linux") then
+        add_syslinks("dl")
+    end
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
