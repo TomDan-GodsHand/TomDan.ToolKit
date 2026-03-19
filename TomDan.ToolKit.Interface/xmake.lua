@@ -3,6 +3,7 @@ add_rules("mode.debug", "mode.release")
 target("TomDan.ToolKit.Interface")
     set_kind("static")
     add_includedirs("include", {public = true})
+    add_files("src/*.cpp")
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
