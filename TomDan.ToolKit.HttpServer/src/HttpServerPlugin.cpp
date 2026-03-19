@@ -16,7 +16,6 @@ private:
     std::atomic<bool> initialized;
     ControllerManager controllerManager;
 
-    std::string pluginPath; // 插件路径
     void RegisterAllController() {
         controllerManager.addController(std::make_unique<ExampleController>());
         controllerManager.registerAllRoutes(&server);
@@ -29,14 +28,6 @@ public:
         return "HttpServerPlugin";
     }
 
-    std::string getPath() const override {
-        return pluginPath;
-    }
-    std::string setPath(const std::string &path) override {
-        pluginPath = path;
-        return pluginPath;
-    }
-    
     void initialize() override {
         if (initialized) return;
         
@@ -73,14 +64,4 @@ extern "C" PLUGIN_API IPlugin* createPlugin(void* context) {
 
 extern "C" PLUGIN_API void destroyPlugin(IPlugin* plugin) {
     delete plugin;
-}
-
-extern "C" PLUGIN_API const char* getPluginPath(IPlugin* plugin) {
-    thread_local static std::string path;
-    path = plugin->getPath();
-    return path.c_str();
-}
-
-extern "C" PLUGIN_API void setPluginPath(IPlugin* plugin, const char* path) {
-    plugin->setPath(std::string(path));
 }

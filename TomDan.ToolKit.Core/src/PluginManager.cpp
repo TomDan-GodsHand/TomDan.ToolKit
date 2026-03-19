@@ -20,9 +20,6 @@ void PluginManager::addPlugin(std::unique_ptr<IPlugin> plugin, void* handle, con
         return;
     }
     std::string pluginName = plugin->getName();
-    if (!path.empty()) {
-        plugin->setPath(path);
-    }
     PluginInfo info;
     info.plugin = std::move(plugin);
     info.handle = handle;
@@ -109,7 +106,6 @@ bool PluginManager::loadPluginAtIndex(size_t index, const std::string& filepath)
         info.lastHeartbeat = std::chrono::steady_clock::now();
         info.active = true;
         info.filepath = filepath;
-        plugin->setPath(filepath);
 
         // 如果索引超出范围，添加到末尾
         if (index >= plugins.size()) {
