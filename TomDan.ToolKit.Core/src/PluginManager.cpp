@@ -179,9 +179,11 @@ bool PluginManager::loadPlugin(const std::string &filepath) {
       }
 #else
       // Linux/Unix/macOS 加载
-      void *handle = dlopen(filepath.c_str(), RTLD_LAZY);
+      void* handle = dlopen(filepath.c_str(), RTLD_LAZY);
       if (!handle) {
-        throw std::runtime_error("加载插件失败");
+        const char* error = dlerror();
+        std::cerr << "加载插件失败: " << (error ? error : "未知错误") << std::endl;
+        throw std::runtime_error(std::string("加载插件失败: ") + (error ? error : "未知错误"));
       }
 
       // 获取创建插件的函数
