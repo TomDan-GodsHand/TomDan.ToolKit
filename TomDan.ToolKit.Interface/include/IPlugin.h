@@ -25,7 +25,7 @@ typedef IPlugin* (*CreatePluginFunc)(void* context);
 // 插件接口类
 class PLUGIN_API IPlugin {
 public:
-    virtual ~IPlugin() = 0;
+    virtual ~IPlugin() = default;
     virtual std::string getName() const = 0;
     virtual void initialize() = 0;
     virtual void execute() = 0;
