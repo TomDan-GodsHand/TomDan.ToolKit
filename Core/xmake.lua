@@ -3,8 +3,11 @@ add_rules("mode.debug", "mode.release")
 target("Core")
     set_kind("binary")
     add_includedirs("include")
+    add_includedirs("include/Network")
+    add_packages("asio")
+
     add_deps("Interface")
-    add_files("src/*.cpp")
+    add_files("src/**.cpp")
     -- 平台特定的系统链接
     if is_plat("linux") then
         add_syslinks("dl")

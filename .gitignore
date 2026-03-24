@@ -12,3 +12,9 @@ compile_commands.json
 # Visual Studio Code Cache
 .vscode/
 
+# config
+.clangd
+.clang-format
+.editorconfig
+
+

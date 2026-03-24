@@ -1,42 +1,42 @@
 #ifndef PLUGINMANAGER_H
 #define PLUGINMANAGER_H
 
-#include <vector>
+#include "MessageBus.hpp"
+#include "Plugin.hpp"
+#include <chrono>
 #include <memory>
 #include <string>
-#include <chrono>
-#include "Plugin.hpp"
-#include "MessageBus.hpp"
+#include <vector>
 
 // 插件管理类
 class PluginManager {
 private:
     struct PluginInfo {
         std::unique_ptr<Plugin> plugin;
-        void* handle; // 动态库句柄
+        void *handle;                                        // 动态库句柄
         std::chrono::steady_clock::time_point lastHeartbeat; // 最后心跳时间
-        bool active; // 插件是否活跃
-        std::string filepath; // 插件文件路径（如果是动态库加载的）
+        bool active;                                         // 插件是否活跃
+        std::string filepath;                                // 插件文件路径（如果是动态库加载的）
     };
-    
+
     std::vector<PluginInfo> plugins;
-    
+
     // 添加插件的辅助函数
-    void addPlugin(std::unique_ptr<Plugin> plugin, void* handle = nullptr, const std::string& path = "");
-    
+    void addPlugin(std::unique_ptr<Plugin> plugin, void *handle = nullptr, const std::string &path = "");
+
     // 在指定位置加载插件的辅助函数
-    bool loadPluginAtIndex(size_t index, const std::string& filepath);
-    
-    MessageBus* messageBus; // 消息总线指针
+    bool loadPluginAtIndex(size_t index, const std::string &filepath);
+
+    MessageBus *messageBus;                                                  // 消息总线指针
     const std::chrono::seconds HEARTBEAT_TIMEOUT = std::chrono::seconds(30); // 心跳超时时间
 
 public:
-    PluginManager(MessageBus* bus);
+    PluginManager(MessageBus *bus);
     void registerPlugin(std::unique_ptr<Plugin> plugin);
-    void loadPluginsFromDirectory(const std::string& directory);
-    bool loadPlugin(const std::string& filepath); // 加载单个插件
-    bool unloadPlugin(size_t index); // 卸载指定插件
-    void reloadPlugin(size_t index); // 重新加载指定插件
+    void loadPluginsFromDirectory(const std::string &directory);
+    bool loadPlugin(const std::string &filepath); // 加载单个插件
+    bool unloadPlugin(size_t index);              // 卸载指定插件
+    void reloadPlugin(size_t index);              // 重新加载指定插件
     void initializeAll();
     void executeAll();
     size_t getPluginCount() const;

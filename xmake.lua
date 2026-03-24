@@ -11,7 +11,7 @@ add_ldflags("-fuse-ld=lld")
 add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate")
 
-add_requires("cpp-httplib")
+add_requires("asio")
 
 -- 包含子项目
 includes("Interface", "Core", "Plugin.Example" )
