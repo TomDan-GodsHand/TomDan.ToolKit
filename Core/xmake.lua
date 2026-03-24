@@ -1,9 +1,9 @@
 add_rules("mode.debug", "mode.release")
 
-target("TomDan.ToolKit.Core")
+target("Core")
     set_kind("binary")
     add_includedirs("include")
-    add_deps("TomDan.ToolKit.Interface")
+    add_deps("Interface")
     add_files("src/*.cpp")
     -- 平台特定的系统链接
     if is_plat("linux") then

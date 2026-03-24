@@ -1,4 +1,4 @@
-#include "PluginManager.h"
+#include "PluginManager.hpp"
 #include <cstring>
 #include <filesystem>
 #include <iostream>
@@ -12,9 +12,9 @@
 
 namespace fs = std::filesystem;
 
-PluginManager::PluginManager(IMessageBus *bus) : messageBus(bus) {}
+PluginManager::PluginManager(MessageBus *bus) : messageBus(bus) {}
 
-void PluginManager::addPlugin(std::unique_ptr<IPlugin> plugin, void* handle, const std::string& path) {
+void PluginManager::addPlugin(std::unique_ptr<Plugin> plugin, void* handle, const std::string& path) {
     if (!plugin) {
         std::cerr << "无法添加空插件" << std::endl;
         return;
@@ -88,7 +88,7 @@ bool PluginManager::loadPluginAtIndex(size_t index, const std::string& filepath)
 #endif
 
         // 创建插件实例
-        IPlugin *plugin = createPlugin(messageBus);
+        Plugin *plugin = createPlugin(messageBus);
         if (!plugin) {
             std::cerr << "创建插件实例失败" << std::endl;
 #ifdef _WIN32
@@ -126,7 +126,7 @@ bool PluginManager::loadPluginAtIndex(size_t index, const std::string& filepath)
     }
 }
 
-void PluginManager::registerPlugin(std::unique_ptr<IPlugin> plugin) {
+void PluginManager::registerPlugin(std::unique_ptr<Plugin> plugin) {
   try {
     addPlugin(std::move(plugin), nullptr);
   } catch (const std::exception &e) {
@@ -194,7 +194,7 @@ bool PluginManager::loadPlugin(const std::string &filepath) {
 #endif
 
       // 创建插件实例
-      IPlugin *plugin = createPlugin(messageBus);
+      Plugin *plugin = createPlugin(messageBus);
       if (!plugin) {
         std::cerr << "创建插件实例失败" << std::endl;
 #ifdef _WIN32
@@ -205,7 +205,7 @@ bool PluginManager::loadPlugin(const std::string &filepath) {
         throw std::runtime_error("创建插件实例失败");
       }
       // 添加到插件列表
-      addPlugin(std::unique_ptr<IPlugin>(plugin), handle, filepath);
+      addPlugin(std::unique_ptr<Plugin>(plugin), handle, filepath);
     }
   } catch (const std::exception &e) {
     std::cerr << "加载插件失败: " << filepath << " - " << e.what()
@@ -229,7 +229,7 @@ bool PluginManager::unloadPlugin(size_t index) {
     // 尝试使用插件导出的destroyPlugin接口销毁插件实例
     if (pluginInfo.handle) {
       // 获取destroyPlugin函数
-      typedef void (*DestroyPluginFunc)(IPlugin*);
+      typedef void (*DestroyPluginFunc)(Plugin*);
 #ifdef _WIN32
       DestroyPluginFunc destroyPlugin = (DestroyPluginFunc)GetProcAddress(
           static_cast<HMODULE>(pluginInfo.handle), "destroyPlugin");

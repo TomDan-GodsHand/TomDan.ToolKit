@@ -1,7 +1,7 @@
 add_rules("mode.debug", "mode.release")
 
-target("TomDan.ToolKit.Interface")
-    set_kind("static")
+target("Interface")
+    set_kind("headeronly")
     add_includedirs("include", {public = true})
 
 --

@@ -1,13 +1,13 @@
-#ifndef IMESSAGEBUS_H
-#define IMESSAGEBUS_H
+#ifndef MESSAGEBUS_H
+#define MESSAGEBUS_H
 
 #include <string>
 #include <functional>
 
 // 信息互通接口 - 订阅发布模式
-class IMessageBus {
+class MessageBus {
 public:
-    virtual ~IMessageBus() = default;
+    virtual ~MessageBus() = default;
     
     // 发送消息到指定主题
     virtual void publish(const std::string& topic, const std::string& message) = 0;
@@ -19,4 +19,4 @@ public:
     virtual void unsubscribe(int subscriptionId) = 0;
 };
 
-#endif // IMESSAGEBUS_H
+#endif // MESSAGEBUS_H

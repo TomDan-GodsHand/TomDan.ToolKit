@@ -4,9 +4,10 @@
 #include <atomic>
 #include <mutex>
 #include <condition_variable>
-#include "PluginManager.h"
-#include "MessageBus.h"
+#include "PluginManager.hpp"
+#include "LocalMessageBus.hpp"
 
+import BestPluginManager; // 示例模块导入，实际使用时根据需要调整
 std::atomic<bool> g_running(true);
 std::mutex g_mutex;
 std::condition_variable g_cv;
@@ -27,7 +28,7 @@ void inputThread() {
 
 int main() {
     // 创建消息总线
-    MessageBus messageBus;
+    LocalMessageBus messageBus;
 
     // 创建插件管理器
     PluginManager pluginManager(&messageBus);

@@ -1,16 +1,16 @@
-#include "IPlugin.h"
-#include "IMessageBus.h"
+#include "Plugin.h"
+#include "MessageBus.h"
 #include <iostream>
 #include <string>
 
-class ExamplePlugin : public IPlugin {
+class ExamplePlugin : public Plugin {
 private:
-    IMessageBus* messageBus;
+    MessageBus* messageBus;
     int subscriptionId;
     int heartbeatCount; // 心跳计数器
 
 public:
-    ExamplePlugin(IMessageBus* bus) : messageBus(bus), subscriptionId(0), heartbeatCount(0) {}
+    ExamplePlugin(MessageBus* bus) : messageBus(bus), subscriptionId(0), heartbeatCount(0) {}
 
     std::string getName() const override {
         return "ExamplePlugin";
@@ -42,11 +42,11 @@ public:
 };
 
 // 导出函数
-extern "C" PLUGIN_API IPlugin* createPlugin(void* context) {
-    return new ExamplePlugin(static_cast<IMessageBus*>(context));
+extern "C" PLUGIN_API Plugin* createPlugin(void* context) {
+    return new ExamplePlugin(static_cast<MessageBus*>(context));
 }
 
-extern "C" PLUGIN_API void destroyPlugin(IPlugin* plugin) {
+extern "C" PLUGIN_API void destroyPlugin(Plugin* plugin) {
     delete plugin;
 }
 

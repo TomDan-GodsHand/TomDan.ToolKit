@@ -1,8 +1,8 @@
-#include "MessageBus.h"
+#include "LocalMessageBus.hpp"
 #include <iostream>
 #include <algorithm>
 
-void MessageBus::publish(const std::string& topic, const std::string& message) {
+void LocalMessageBus::publish(const std::string& topic, const std::string& message) {
     std::cout << "Publishing to topic '" << topic << "': " << message << std::endl;
     
     // 通知所有订阅者
@@ -17,7 +17,7 @@ void MessageBus::publish(const std::string& topic, const std::string& message) {
     }
 }
 
-int MessageBus::subscribe(const std::string& topic, std::function<void(const std::string&)> callback) {
+int LocalMessageBus::subscribe(const std::string& topic, std::function<void(const std::string&)> callback) {
     int id = nextSubscriptionId++;
     
     // 创建订阅
@@ -36,7 +36,7 @@ int MessageBus::subscribe(const std::string& topic, std::function<void(const std
     return id;
 }
 
-void MessageBus::unsubscribe(int subscriptionId) {
+void LocalMessageBus::unsubscribe(int subscriptionId) {
     auto it = subscriptions.find(subscriptionId);
     if (it != subscriptions.end()) {
         std::string topic = it->second.topic;

@@ -1,14 +1,14 @@
-#ifndef MESSAGEBUS_H
-#define MESSAGEBUS_H
+#ifndef LOCAL_MESSAGEBUS_H
+#define LOCAL_MESSAGEBUS_H
 
 #include <map>
 #include <string>
 #include <vector>
 #include <functional>
-#include "IMessageBus.h"
+#include "MessageBus.h"
 
 // 订阅发布模式的消息总线实现
-class MessageBus : public IMessageBus {
+class LocalMessageBus : public MessageBus {
 private:
     struct Subscription {
         int id;
@@ -26,4 +26,4 @@ public:
     void unsubscribe(int subscriptionId) override;
 };
 
-#endif // MESSAGEBUS_H
+#endif // LOCAL_MESSAGEBUS_H

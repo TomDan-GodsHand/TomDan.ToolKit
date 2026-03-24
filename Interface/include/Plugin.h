@@ -1,9 +1,9 @@
-#ifndef IPLUGIN_H
-#define IPLUGIN_H
+#ifndef PLUGIN_H
+#define PLUGIN_H
 
 #include <string>
 
-class IPlugin;
+class Plugin;
 // 插件导出宏
 #ifndef PLUGIN_API
     #ifdef _WIN32
@@ -20,12 +20,12 @@ class IPlugin;
 // 前向声明
 
 // 插件创建函数类型
-typedef IPlugin* (*CreatePluginFunc)(void* context);
+typedef Plugin* (*CreatePluginFunc)(void* context);
 
 // 插件接口类
-class PLUGIN_API IPlugin {
+class PLUGIN_API Plugin {
 public:
-    virtual ~IPlugin() = default;
+    virtual ~Plugin() = default;
     virtual std::string getName() const = 0;
     virtual void initialize() = 0;
     virtual void execute() = 0;
@@ -33,9 +33,9 @@ public:
 };
 
 // 插件导出函数声明
-extern "C" PLUGIN_API IPlugin* createPlugin(void* context);
+extern "C" PLUGIN_API Plugin* createPlugin(void* context);
 
-extern "C" PLUGIN_API void destroyPlugin(IPlugin* plugin);
+extern "C" PLUGIN_API void destroyPlugin(Plugin* plugin);
 
 
-#endif // IPLUGIN_H
+#endif // PLUGIN_H
