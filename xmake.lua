@@ -1,6 +1,12 @@
 set_config("compile_commands",true)
 
 set_languages("cxx26")
+set_toolchains("llvm")
+
+-- 使用libc++作为C++标准库，并使用lld链接器
+add_cxxflags("-stdlib=libc++")
+add_ldflags("-stdlib=libc++")
+add_ldflags("-fuse-ld=lld")
 
 add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate")

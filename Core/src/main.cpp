@@ -7,7 +7,6 @@
 #include "PluginManager.hpp"
 #include "LocalMessageBus.hpp"
 
-import BestPluginManager; // 示例模块导入，实际使用时根据需要调整
 std::atomic<bool> g_running(true);
 std::mutex g_mutex;
 std::condition_variable g_cv;
