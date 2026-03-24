@@ -93,6 +93,18 @@ xmake build ExamplePlugin
 xmake run TomDan.ToolKit.Core
 ```
 
+### 使用CMake构建
+
+推荐使用 Clang/LLVM（如果希望使用 libc++），并在项目根目录执行：
+
+```bash
+# 在项目根目录
+mkdir -p build && cd build
+cmake -S .. -B . -DCMAKE_BUILD_TYPE=Release
+cmake --build . --config Release
+# 可执行文件和插件会输出到 build/<系统>/<架构>/<配置>/ 目录
+```
+
 ## 插件开发指南
 
 ### 1. 创建插件项目
