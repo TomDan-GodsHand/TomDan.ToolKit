@@ -105,6 +105,77 @@ cmake --build . --config Release
 # 可执行文件和插件会输出到 build/<系统>/<架构>/<配置>/ 目录
 ```
 
+### CMake导入第三方库
+
+在CMake中导入第三方库有多种方式，本项目使用`FetchContent`来自动下载和集成asio库：
+
+#### 1. 使用FetchContent（推荐）
+
+在顶层`CMakeLists.txt`中添加：
+
+```cmake
+include(FetchContent)
+
+# ASIO standalone library
+FetchContent_Declare(
+  asio
+  GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
+  GIT_TAG asio-1-30-2
+  GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(asio)
+```
+
+然后在需要使用的子目录中链接：
+
+```cmake
+target_include_directories(YourTarget PRIVATE ${asio_SOURCE_DIR}/asio/include)
+target_compile_definitions(YourTarget PRIVATE ASIO_STANDALONE)
+```
+
+#### 2. 使用find_package（需要预安装）
+
+如果asio已安装在系统中：
+
+```cmake
+find_package(asio REQUIRED)
+target_link_libraries(YourTarget PRIVATE asio::asio)
+```
+
+#### 3. 使用ExternalProject
+
+对于更复杂的依赖管理：
+
+```cmake
+include(ExternalProject)
+ExternalProject_Add(asio
+  GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
+  GIT_TAG asio-1-30-2
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND ""
+  INSTALL_COMMAND ""
+)
+```
+
+#### 4. 使用vcpkg或conan
+
+如果使用包管理器：
+
+```bash
+# vcpkg
+vcpkg install asio
+
+# conan
+conan install asio/1.30.2@
+```
+
+然后在CMake中：
+
+```cmake
+find_package(asio CONFIG REQUIRED)
+target_link_libraries(YourTarget PRIVATE asio::asio)
+```
+
 ## 插件开发指南
 
 ### 1. 创建插件项目

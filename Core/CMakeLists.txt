@@ -14,6 +14,9 @@ target_include_directories(Core PRIVATE
 # ASIO is used as standalone headers in this project
 target_compile_definitions(Core PRIVATE ASIO_STANDALONE)
 
+# Link asio header-only library
+target_include_directories(Core PRIVATE ${asio_SOURCE_DIR}/asio/include)
+
 target_link_libraries(Core PRIVATE Interface)
 
 if(UNIX)

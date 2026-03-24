@@ -14,6 +14,18 @@ if(USE_LIBCXX)
   endif()
 endif()
 
+# FetchContent for third-party dependencies
+include(FetchContent)
+
+# ASIO standalone library
+FetchContent_Declare(
+  asio
+  GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
+  GIT_TAG asio-1-30-2
+  GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(asio)
+
 add_subdirectory(Interface)
 add_subdirectory(Core)
 add_subdirectory(Plugin.Example)
