@@ -1,5 +1,5 @@
-#include "Plugin.h"
-#include "MessageBus.h"
+#include "Plugin.hpp"
+#include "MessageBus.hpp"
 #include <iostream>
 #include <string>
 

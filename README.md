@@ -27,14 +27,14 @@ TomDan.ToolKit采用分层架构设计，主要包含以下组件：
 TomDan.ToolKit/
 ├── TomDan.ToolKit.Interface/    # 接口定义项目
 │   ├── include/                 # 接口头文件
-│   │   ├── IPlugin.h            # 插件接口
-│   │   └── IMessageBus.h        # 消息总线接口
+│   │   ├── IPlugin.hpp            # 插件接口
+│   │   └── IMessageBus.hpp        # 消息总线接口
 │   ├── src/                     # 源文件
 │   └── xmake.lua                # 构建配置
 ├── TomDan.ToolKit.Core/         # 核心实现项目
 │   ├── include/                 # 内部头文件
-│   │   ├── PluginManager.h      # 插件管理器
-│   │   └── MessageBus.h         # 消息总线实现
+│   │   ├── PluginManager.hpp      # 插件管理器
+│   │   └── MessageBus.hpp         # 消息总线实现
 │   ├── src/                     # 源文件
 │   │   ├── main.cpp             # 主程序
 │   │   ├── PluginManager.cpp    # 插件管理器实现
@@ -116,8 +116,8 @@ target("MyPlugin")
 ### 2. 实现插件
 
 ```cpp
-#include "IPlugin.h"
-#include "IMessageBus.h"
+#include "IPlugin.hpp"
+#include "IMessageBus.hpp"
 #include <iostream>
 
 class MyPlugin : public IPlugin {

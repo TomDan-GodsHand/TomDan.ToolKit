@@ -1,5 +1,5 @@
-#ifndef MESSAGEBUS_H
-#define MESSAGEBUS_H
+#ifndef MESSAGEBUS_HPP
+#define MESSAGEBUS_HPP
 
 #include <string>
 #include <functional>
@@ -19,4 +19,4 @@ public:
     virtual void unsubscribe(int subscriptionId) = 0;
 };
 
-#endif // MESSAGEBUS_H
+#endif // MESSAGEBUS_HPP

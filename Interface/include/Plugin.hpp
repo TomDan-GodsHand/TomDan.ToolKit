@@ -1,5 +1,5 @@
-#ifndef PLUGIN_H
-#define PLUGIN_H
+#ifndef PLUGIN_HPP
+#define PLUGIN_HPP
 
 #include <string>
 
@@ -38,4 +38,4 @@ extern "C" PLUGIN_API Plugin* createPlugin(void* context);
 extern "C" PLUGIN_API void destroyPlugin(Plugin* plugin);
 
 
-#endif // PLUGIN_H
+#endif // PLUGIN_HPP

@@ -5,8 +5,8 @@
 #include <memory>
 #include <string>
 #include <chrono>
-#include "Plugin.h"
-#include "MessageBus.h"
+#include "Plugin.hpp"
+#include "MessageBus.hpp"
 
 // 插件管理类
 class PluginManager {

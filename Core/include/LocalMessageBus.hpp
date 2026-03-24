@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <functional>
-#include "MessageBus.h"
+#include "MessageBus.hpp"
 
 // 订阅发布模式的消息总线实现
 class LocalMessageBus : public MessageBus {
